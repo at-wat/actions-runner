@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker run -it --rm \
+docker run --rm \
   ${DOCKER_OPTS:-} \
   -v $(pwd)/.runner:/opt/actions-runner/.runner \
   -v $(pwd)/.credentials:/opt/actions-runner/.credentials \
