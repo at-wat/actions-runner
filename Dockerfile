@@ -14,6 +14,8 @@ RUN wget https://download.visualstudio.microsoft.com/download/pr/cd4d5d32-f493-4
   && tar xzf /tmp/core.tar.gz -C /usr/dotnet \
   && rm /tmp/core.tar.gz
 
+ENV PATH=/usr/dotnet:${PATH}
+
 RUN apk add --no-cache \
   bash \
   coreutils \
