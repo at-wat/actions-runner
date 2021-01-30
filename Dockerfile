@@ -1,31 +1,21 @@
-FROM alpine:3.13
+FROM ubuntu:20.04
 
-RUN apk add --no-cache \
-  icu-libs \
-  krb5-libs \
-  gcompat \
-  libgcc \
-  libintl \
-  libssl1.1 \
-  libstdc++ \
-  zlib
+RUN apt-get update -qq \
+  && apt-get install -y \
+    apt-transport-https \
+    wget \
+    sudo
 
-RUN wget https://download.visualstudio.microsoft.com/download/pr/cd4d5d32-f493-411e-9e04-ecaae0a372f0/252cc794c641b6bbdae0faeeb6e78152/aspnetcore-runtime-5.0.2-linux-musl-arm64.tar.gz -O /tmp/core.tar.gz \
-  && mkdir -p /usr/dotnet \
-  && tar xzf /tmp/core.tar.gz -C /usr/dotnet \
-  && rm /tmp/core.tar.gz
+RUN wget https://packages.microsoft.com/config/ubuntu/20.10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
+  && dpkg -i packages-microsoft-prod.deb \
+  && rm packages-microsoft-prod.deb \
+  && apt-get update -qq \
+  && apt-get install -y apt-transport-https \
+  && apt-get update -qq \
+  && apt-get install -y aspnetcore-runtime-5.0
 
-ENV PATH=/usr/dotnet:${PATH}
-
-RUN apk add --no-cache \
-  bash \
-  coreutils \
-  sudo
-
-RUN addgroup -g 1000 runner \
-  && adduser -S runner -s /bin/bash -D -g runner -G wheel -u 1000 \
-  && passwd -u runner \
-  && echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+RUN useradd -U -G sudo,root runner \
+  && echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 RUN mkdir -p /opt/actions-runner \
   && chown runner:runner /opt/actions-runner
