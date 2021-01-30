@@ -3,6 +3,7 @@ FROM alpine:3.13
 RUN apk add --no-cache \
   icu-libs \
   krb5-libs \
+  gcompat \
   libgcc \
   libintl \
   libssl1.1 \
