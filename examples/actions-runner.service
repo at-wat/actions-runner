@@ -1,0 +1,13 @@
+[Unit]
+Description=Run GitHub Actions hosted runner
+After=docker.service
+
+[Service]
+WorkingDirectory=/opt/actions-runner
+Environment=DOCKER_OPTS=""
+ExecStart=/opt/actions-runner/run.sh
+KillSignal=SIGINT
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
