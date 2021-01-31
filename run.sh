@@ -7,4 +7,4 @@ exec docker run --rm \
   -v $(pwd)/.credentials_rsaparams:/opt/actions-runner/.credentials_rsaparams \
   -v $(pwd)/.env:/opt/actions-runner/.env \
   -v $(pwd)/.path:/opt/actions-runner/.path \
-  actions-runner ./run.sh $@
+  ghcr.io/at-wat/actions-runner ./run.sh $@
