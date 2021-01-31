@@ -8,6 +8,8 @@ Environment=DOCKER_OPTS=""
 ExecStart=/opt/actions-runner/run.sh
 KillSignal=SIGINT
 Type=simple
+Restart=always
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
