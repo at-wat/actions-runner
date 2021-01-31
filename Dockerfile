@@ -18,10 +18,13 @@ RUN useradd -U -G sudo,root runner \
   && echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 RUN mkdir -p /opt/actions-runner \
-  && chown runner:runner /opt/actions-runner
+  && chown runner:runner /opt/actions-runner \
+  && mkdir -p /home/runner \
+  && chown runner:runner /home/runner
 WORKDIR /opt/actions-runner
 
 USER runner
+ENV USER=runner
 
 ARG RUNNER_VERSION=2.276.1
 RUN wget https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz -O runner.tar.gz \
