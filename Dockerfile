@@ -24,7 +24,8 @@ RUN mkdir -p /opt/actions-runner \
   && chown runner:runner /home/runner
 WORKDIR /opt/actions-runner
 
-RUN echo -e "#!/bin/sh\nexec $@" > /entrypoint.sh
+RUN echo -e "#!/bin/sh\nexec $@" > /entrypoint.sh \
+  && chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 USER runner
