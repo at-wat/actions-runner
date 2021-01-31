@@ -3,6 +3,7 @@ FROM ubuntu:20.04
 RUN apt-get update -qq \
   && apt-get install -y \
     apt-transport-https \
+    bash \
     curl \
     wget \
     sudo
@@ -24,8 +25,9 @@ RUN mkdir -p /opt/actions-runner \
   && chown runner:runner /home/runner
 WORKDIR /opt/actions-runner
 
-RUN echo -e "#!/bin/sh\nexec \$@\n" > /entrypoint.sh \
-  && chmod +x /entrypoint.sh
+SHELL ["/bin/bash", "-c"]
+RUN echo -e '#!/bin/sh\n\nexec $@\n' > /entrypoint.sh \
+  && chmod a+x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 USER runner
