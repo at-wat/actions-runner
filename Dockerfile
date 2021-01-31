@@ -3,6 +3,7 @@ FROM ubuntu:20.04
 RUN apt-get update -qq \
   && apt-get install -y \
     apt-transport-https \
+    curl \
     wget \
     sudo
 
