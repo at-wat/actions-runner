@@ -26,7 +26,15 @@ then
   exit 1
 fi
 
-exec docker run --rm \
+cid=$(docker run -d --rm \
   ${DOCKER_OPTS:-} \
   ${opts} \
-  ghcr.io/at-wat/actions-runner ./run.sh $@
+  ghcr.io/at-wat/actions-runner ./run.sh $@)
+
+stop() {
+  docker stop ${cid}
+}
+
+trap stop SIGINT SIGTERM
+
+docker logs -f ${cid}
