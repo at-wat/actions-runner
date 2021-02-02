@@ -25,9 +25,9 @@ RUN mkdir -p /opt/actions-runner \
   && chown runner:runner /home/runner
 WORKDIR /opt/actions-runner
 
+ENV DEB_REPOSITORY_BASE_URL=http://archive.ubuntu.com/ubuntu/
 SHELL ["/bin/bash", "-c"]
-RUN echo -e '#!/bin/sh\n\nexec $@\n' > /entrypoint.sh \
-  && chmod a+x /entrypoint.sh
+COPY scripts/entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 
 USER runner
