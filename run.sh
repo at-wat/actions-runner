@@ -29,7 +29,7 @@ fi
 cid=$(docker run -d --rm \
   ${DOCKER_OPTS:-} \
   ${opts} \
-  ghcr.io/at-wat/actions-runner ./run.sh $@)
+  ghcr.io/at-wat/actions-runner ./bin/runsvc.sh $@)
 
 stop() {
   docker stop ${cid}
