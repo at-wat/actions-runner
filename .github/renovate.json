@@ -1,0 +1,18 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "regexManagers": [
+    {
+      "fileMatch": [
+        "^Dockerfile$"
+      ],
+      "matchStrings": [
+        "ARG RUNNER_VERSION=(?<currentValue>.*)"
+      ],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "actions/runner",
+      "versioningTemplate": "semver"
+    }
+  ]
+}
