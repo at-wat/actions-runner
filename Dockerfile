@@ -33,7 +33,7 @@ ENTRYPOINT ["/entrypoint.sh"]
 USER runner
 ENV USER=runner
 
-ARG RUNNER_VERSION=v2.277.1
+ARG RUNNER_VERSION=v2.278.0
 RUN wget https://github.com/actions/runner/releases/download/${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION:1}.tar.gz -O runner.tar.gz \
   && tar xzf ./runner.tar.gz \
   && rm ./runner.tar.gz
