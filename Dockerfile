@@ -1,7 +1,10 @@
 FROM ubuntu:20.04
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update -qq \
   && apt-get install -y \
+    awscli \
     apt-transport-https \
     bash \
     curl \
