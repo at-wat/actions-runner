@@ -1,5 +1,11 @@
 # actions-runner: GitHub Actions runner docker image
 
+## notice
+
+### 2.287.1
+
+Due to the upstream changes [actions/runner#1494](https://github.com/actions/runner/pull/1494) and [actions/runner#1558](https://github.com/actions/runner/pull/1558), **runner config must be recreated** to avoid infinite update loop.
+
 ## example usage
 
 Read https://docs.github.com/en/actions/hosting-your-own-runners/adding-self-hosted-runners to understand usual configuration of the hosted-runner.
