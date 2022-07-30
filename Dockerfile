@@ -1,6 +1,9 @@
-FROM ubuntu:20.04
+ARG UBUNTU_VERSION=20.04
+FROM ubuntu:${UBUNTU_VERSION}
 
 ENV DEBIAN_FRONTEND=noninteractive
+
+ARG UBUNTU_VERSION
 
 RUN apt-get update -qq \
   && apt-get install -y \
@@ -11,13 +14,17 @@ RUN apt-get update -qq \
     wget \
     sudo
 
-RUN wget https://packages.microsoft.com/config/ubuntu/20.10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
+RUN wget https://packages.microsoft.com/config/ubuntu/${UBUNTU_VERSION}/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
   && dpkg -i packages-microsoft-prod.deb \
   && rm packages-microsoft-prod.deb \
   && apt-get update -qq \
   && apt-get install -y apt-transport-https \
   && apt-get update -qq \
-  && apt-get install -y aspnetcore-runtime-5.0
+  && case ${UBUNTU_VERSION} in \
+      20.04) ASPNETCORE_VERSION=5.0;; \
+      *) ASPNETCORE_VERSION=6.0;; \
+    esac \
+  && apt-get install -y aspnetcore-runtime-${ASPNETCORE_VERSION}
 
 RUN useradd -U -G sudo,root runner \
   && echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
