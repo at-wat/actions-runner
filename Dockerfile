@@ -12,7 +12,8 @@ RUN apt-get update -qq \
     bash \
     curl \
     wget \
-    sudo
+    sudo \
+  && rm -rf /var/lib/apt/lists/*
 
 RUN wget https://packages.microsoft.com/config/ubuntu/${UBUNTU_VERSION}/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
   && dpkg -i packages-microsoft-prod.deb \
@@ -24,7 +25,8 @@ RUN wget https://packages.microsoft.com/config/ubuntu/${UBUNTU_VERSION}/packages
       20.04) ASPNETCORE_VERSION=5.0;; \
       *) ASPNETCORE_VERSION=6.0;; \
     esac \
-  && apt-get install -y aspnetcore-runtime-${ASPNETCORE_VERSION}
+  && apt-get install -y aspnetcore-runtime-${ASPNETCORE_VERSION} \
+  && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -U -G sudo,root runner \
   && echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
