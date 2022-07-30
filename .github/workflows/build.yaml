@@ -41,9 +41,9 @@ jobs:
           docker tag \
             ghcr.io/${{ github.repository_owner }}/actions-runner:latest \
             ghcr.io/${{ github.repository_owner }}/actions-runner:${version}-ubuntu${{ matrix.ubuntu }}
-          docker push ghcr.io/${{ github.repository_owner }}/actions-runner:${version}
           docker push ghcr.io/${{ github.repository_owner }}/actions-runner:${version}-ubuntu${{ matrix.ubuntu }}
           if [ ${default_ubuntu_version} = ${{ matrix.ubuntu }} ]
           then
+            docker push ghcr.io/${{ github.repository_owner }}/actions-runner:${version}
             docker push ghcr.io/${{ github.repository_owner }}/actions-runner:latest
           fi
