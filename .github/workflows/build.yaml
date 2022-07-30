@@ -28,11 +28,17 @@ jobs:
       - name: Get runner version
         id: runner-version
         run: echo "::set-output name=version::$(sed -n 's/^ARG\s*RUNNER_VERSION=v\([0-9]\+\.[0-9]\+\.[0-9]\+\)$/\1/p' Dockerfile)"
+      - name: Pull image for cache
+        id: cache
+        run: |
+          image=ghcr.io/${{ github.repository_owner }}/actions-runner:${{ steps.runner-version.outputs.version }}-ubuntu${{ matrix.ubuntu }}
+          docker pull ${image}
+          echo "::set-output name=tag::${image}"
 
       - name: Build image
         run: |
           docker build \
-            --cache-from ghcr.io/${{ github.repository_owner }}/actions-runner:${{ steps.runner-version.outputs.version }}-ubuntu${{ matrix.ubuntu }} \
+            --cache-from ${{ steps.cache.outputs.tag }} \
             --build-arg UBUNTU_VERSION=${{ matrix.ubuntu }} \
             -t ghcr.io/${{ github.repository_owner }}/actions-runner:latest .
       - name: Deploy
