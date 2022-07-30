@@ -18,11 +18,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Build image
-        run: |
-          docker build \
-            --build-arg UBUNTU_VERSION=${{ matrix.ubuntu }} \
-            -t ghcr.io/${{ github.repository_owner }}/actions-runner:latest .
       - name: Login to GitHub Container Registry
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
         uses: docker/login-action@v2
@@ -30,20 +25,35 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get runner version
+        id: runner-version
+        run: echo "::set-output name=version::$(sed -n 's/^ARG\s*RUNNER_VERSION=v\([0-9]\+\.[0-9]\+\.[0-9]\+\)$/\1/p' Dockerfile)"
+      - name: Pull image for cache
+        id: cache
+        run: |
+          image=ghcr.io/${{ github.repository_owner }}/actions-runner:${{ steps.runner-version.outputs.version }}-ubuntu${{ matrix.ubuntu }}
+          docker pull ${image}
+          echo "::set-output name=tag::${image}"
+
+      - name: Build image
+        run: |
+          docker build \
+            --cache-from ${{ steps.cache.outputs.tag }} \
+            --build-arg UBUNTU_VERSION=${{ matrix.ubuntu }} \
+            -t ghcr.io/${{ github.repository_owner }}/actions-runner:latest .
       - name: Deploy
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
         run: |
-          version=$(sed -n 's/^ARG\s*RUNNER_VERSION=v\([0-9]\+\.[0-9]\+\.[0-9]\+\)$/\1/p' Dockerfile)
           default_ubuntu_version=$(sed -n 's/^ARG\s*UBUNTU_VERSION=\([0-9]\+\.[0-9]\+\)$/\1/p' Dockerfile)
           docker tag \
             ghcr.io/${{ github.repository_owner }}/actions-runner:latest \
-            ghcr.io/${{ github.repository_owner }}/actions-runner:${version}
-          docker tag \
-            ghcr.io/${{ github.repository_owner }}/actions-runner:latest \
-            ghcr.io/${{ github.repository_owner }}/actions-runner:${version}-ubuntu${{ matrix.ubuntu }}
-          docker push ghcr.io/${{ github.repository_owner }}/actions-runner:${version}-ubuntu${{ matrix.ubuntu }}
+            ghcr.io/${{ github.repository_owner }}/actions-runner:${{ steps.runner-version.outputs.version }}-ubuntu${{ matrix.ubuntu }}
+          docker push ghcr.io/${{ github.repository_owner }}/actions-runner:${{ steps.runner-version.outputs.version }}-ubuntu${{ matrix.ubuntu }}
           if [ ${default_ubuntu_version} = ${{ matrix.ubuntu }} ]
           then
-            docker push ghcr.io/${{ github.repository_owner }}/actions-runner:${version}
+            docker tag \
+              ghcr.io/${{ github.repository_owner }}/actions-runner:latest \
+              ghcr.io/${{ github.repository_owner }}/actions-runner:${{ steps.runner-version.outputs.version }}
+            docker push ghcr.io/${{ github.repository_owner }}/actions-runner:${{ steps.runner-version.outputs.version }}
             docker push ghcr.io/${{ github.repository_owner }}/actions-runner:latest
           fi
