@@ -33,7 +33,7 @@ jobs:
         id: cache
         run: |
           image=ghcr.io/${{ github.repository_owner }}/actions-runner:${{ steps.runner-version.outputs.version }}-ubuntu${{ matrix.ubuntu }}
-          docker pull ${image}
+          docker pull ${image} || true
           echo "::set-output name=tag::${image}"
 
       - name: Build image
