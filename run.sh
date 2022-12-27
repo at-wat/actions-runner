@@ -26,7 +26,7 @@ then
   exit 1
 fi
 
-cid=$(docker run -d --rm \
+cid=$(eval docker run -d --rm \
   ${DOCKER_OPTS:-} \
   ${opts} \
   ghcr.io/at-wat/actions-runner ./bin/runsvc.sh $@)
