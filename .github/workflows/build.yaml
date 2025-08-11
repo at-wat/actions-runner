@@ -18,7 +18,7 @@ jobs:
           - '22.04'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Login to GitHub Container Registry
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
         uses: docker/login-action@v3
